@@ -23,7 +23,9 @@ var PatientSchema = new mongoose.Schema({
 	smoker: Boolean,
 	created_at: {type: Date, default: Date.now},
 	updated_at: {type: Date, default: Date.now},
-	last_updater: {type: String, default: 'test'}
+	last_updater: {type: String, default: 'test'},
+	atd_chart: {type: mongoose.Schema.Types.ObjectId, ref: 'ATDChartSchema'}
+	//charts: [mongoose.Schema.Types.ObjectId]
 });
 
 PatientSchema.pre('save', function(next){
