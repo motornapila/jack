@@ -1,3 +1,6 @@
+var dotenv			= require('dotenv');
+dotenv.load();
+
 var express 		= require('express');
 var mongoose 		= require('mongoose');
 var port 			= process.env.PORT || 3000;
@@ -5,9 +8,11 @@ var morgan 			= require('morgan');
 var bodyParser 		= require('body-parser');
 var methodOverride 	= require('method-override');
 var app 			= express();
+var mongoUri		= process.env.MONGO_URI;
 
 //connection to mongoDB
-mongoose.connect('mongodb://motornapila:mpila225@ds011459.mlab.com:11459/dzek');
+//mongoose.connect('mongodb://motornapila:mpila225@ds011459.mlab.com:11459/dzek');
+mongoose.connect(mongoUri);
 
 //Logging and parsing
 app.use(express.static(__dirname + '/public'));
