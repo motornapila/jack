@@ -1,7 +1,6 @@
 var mongoose = require('mongoose');
-var Patient  = require('./models/Patient.js');
-var ATDChart = require('./models/ATDChart.js');
-var CFMChart = require('./models/CFMChart.js');
+var Patient  = require('../models/Patient.js');
+var ATDChart = require('../models/ATDChart.js');
 
 
 //Opens App routes
@@ -20,6 +19,29 @@ module.exports = function(app){
 		});
 	});	//end get /patients
 
+	app.get('/patients/:jmbg', function(req, res, next){
+		var query = Patient.findOne({'jmbg' : req.params.jmbg});
+
+		query.exec(function(err, patient){
+			if(err){ return next(err); }
+
+			if (!patient || patient === null) { 
+				return next(new Error("Greška! Nema traženog pacijenta!"));
+			}
+			res.json(patient);
+		});
+	}); //end app get patient/jmbg
+
+	app.get('/patients/:jmbg/charts/atd', function(req, res, next){
+		var query = Patient.findOne({jmbg: req.params.jmbg});
+
+		query.exec(function(err, patient){
+			if(err) {return next(err);}
+
+			res.json(patient.atd_chart); //MAYBE
+		});
+	});
+
 	//POST routes
 
 	//Save new patient to DB
@@ -35,18 +57,20 @@ module.exports = function(app){
 		});
 	});
 
-	app.get('/patients/:jmbg', function(req, res, next){
-		var query = Patient.findOne({'jmbg' : req.params.jmbg});
+	//update pacijenta - mozda staviti u PUT
+	app.post('/patients/:jmbg', function(req, res, next){
+		var updates = {$set : req.body};
+		
+		Patient.findOneAndUpdate({jmbg: req.params.jmbg}, updates, {new: true, runValidators: true}, function(err, patient){
+			if(err) { return next(err); }
 
-		query.exec(function(err, patient){
-			if(err){ return next(err); }
-
-			if (!patient || patient === null) { 
-				return next(new Error("Greška! Nema traženog pacijenta!"));
-			}
 			res.json(patient);
 		});
-	}); //end app get patient/jmbg
+	}); //end app.update /patient/jmbg
+
+	
+
+	//DELETE routes
 
 	app.delete('/patients/:patient_id', function(req, res, next){
 		//Funkcija za brisanje pacijenata
@@ -61,77 +85,5 @@ module.exports = function(app){
 			});
 		});
 	}); //end app.delete
-
-	app.post('/patients/:jmbg', function(req, res, next){
-		
-		var updates = {$set : req.body};
-		Patient.findOneAndUpdate({jmbg: req.params.jmbg}, updates, {new: true, runValidators: true}, function(err, patient){
-			if(err) { return next(err); }
-
-			res.json(patient);
-		});
-	}); //end app.update /patient/jmbg
-
-	app.get('/patients/:jmbg/charts/atd', function(req, res, next){
-		
-		var query = Patient.findOne({jmbg: req.params.jmbg});
-
-		query.exec(function(err, patient){
-			if(err) {return next(err);}
-
-			res.json(patient.atd_chart); //MAYBE
-		});
-
-	});
-
-
-	app.get('/patients/:jmbg/charts/cfm', function(req, res, next){
-		var query = Patient.findOne({jmbg: req.params.jmbg});
-
-		query.exec(function(err, patient){
-			if(err){return next(err);}
-
-			res.json(patient.cfm_chart);
-		});
-	});
-
-	app.post('/patients/:jmbg/charts/atd', function(req, res, next){
-		var chart_data = new ATDChart(req.body);
-
-		var updates = {$set : {atd_chart: chart_data}};
-		Patient.findOneAndUpdate({jmbg: req.params.jmbg}, updates, {new: true}, function(err, patient){
-			if(err) {return next(err);}
-
-			res.json(patient);
-		});
-	}); //end post atd chart
-
-	app.post('/patients/:jmbg/charts/cfm', function(req, res, next){
-		var chart_data = new CFMChart.CFMChart(req.body);
-
-		var updates = {$set : {cfm_chart: chart_data}};
-		Patient.findOneAndUpdate({jmbg: req.params.jmbg}, updates, {new: true}, function(err, patient){
-			if(err) {return next(err);}
-
-			res.json(patient);
-		});
-
-	}); //end post cfm chart
-
-	app.post('/patients/:jmbg/charts/cfm/visits', function(req, res, next){
-		var visit = new CFMChart.CFMVisit(req.body);
-
-		var updates = {$push: {'cfm_chart.visits': visit}};
-
-		Patient.findOneAndUpdate(
-			{jmbg: req.params.jmbg}, 
-			updates, 
-			{new: true, upsert: true, runValidators: true}, 
-			function(err, data){
-				if(err){return next(err);}
-
-				res.json(data);
-		}); 
-	});//end post cfm visit
 
 };

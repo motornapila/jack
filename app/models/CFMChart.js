@@ -13,7 +13,20 @@ var CFMVisitSchema = new mongoose.Schema({
 		ultrasound: String,
 		medicament: String
 	},
-	refferal: String
+	refferal: String,
+	napomena: String,
+	created_at: {type: Date, default: Date.now},
+	updated_at: {type: Date, default: Date.now},
+	updated_by: {type: String, default: 'test'}
+});
+
+CFMVisitSchema.pre('findOneAndUpdate', function(next){
+	now = new Date();
+	this.updated_at = now;
+	if(!this.created_at){
+		this.created_at = now;
+	}
+	next();
 });
 
 var CFMChartSchema = new mongoose.Schema({
