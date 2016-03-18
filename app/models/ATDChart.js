@@ -11,4 +11,4 @@ var ATDChartSchema = new mongoose.Schema({
 	visits: [ATDVisitSchema]
 });
 
-module.exports = mongoose.module('atdchart', ATDChartSchema);
+module.exports = mongoose.model('ATDChart', ATDChartSchema);

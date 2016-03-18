@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+var cfm = require('./CFMChart.js');
 
 var PatientSchema = new mongoose.Schema({
 	jmbg: {
@@ -24,7 +25,9 @@ var PatientSchema = new mongoose.Schema({
 	created_at: {type: Date, default: Date.now},
 	updated_at: {type: Date, default: Date.now},
 	last_updater: {type: String, default: 'test'},
-	atd_chart: {type: mongoose.Schema.Types.ObjectId, ref: 'ATDChartSchema'}
+	//atd_chart: {type: mongoose.Schema.Types.ObjectId, ref: 'ATDChart'},
+	//cfm_chart: {type: mongoose.Schema.Types.ObjectId, ref: 'CFMChart'}
+	cfm_chart: cfm.CFMChart.schema
 	//charts: [mongoose.Schema.Types.ObjectId]
 });
 
@@ -37,4 +40,4 @@ PatientSchema.pre('save', function(next){
 	next();
 });
 
-module.exports = mongoose.model('patient', PatientSchema);
+module.exports = mongoose.model('Patient', PatientSchema);

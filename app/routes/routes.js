@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var Patient  = require('./models/Patient.js');
 var ATDChart = require('./models/ATDChart.js');
 var CFMChart = require('./models/CFMChart.js');
-//var ATDVisit = require('./models/ATDVisit.js');
+
 
 //Opens App routes
 module.exports = function(app){
@@ -84,17 +84,6 @@ module.exports = function(app){
 
 	});
 
-	//NEVALJA SMISLI NEŠTO DRUGO
-	/*app.post('/patients/:jmbg/charts/atd/visits', function(req, res, next){
-		var visit_data = new ATDVisit(req.body);
-
-		visit_data.save(function(err){
-			if(err) {return next(err);}
-
-			res.json(req.body);
-		});
-	}); //end post atd chart
-	*/
 
 	app.get('/patients/:jmbg/charts/cfm', function(req, res, next){
 		var query = Patient.findOne({jmbg: req.params.jmbg});
@@ -142,9 +131,7 @@ module.exports = function(app){
 				if(err){return next(err);}
 
 				res.json(data);
-		}); //end post cfm visit
-
-
-	});
+		}); 
+	});//end post cfm visit
 
 };
