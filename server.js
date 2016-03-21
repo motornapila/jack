@@ -27,6 +27,7 @@ app.use(methodOverride());
 //Routes
 require('./app/routes/routes.js')(app);
 require('./app/routes/cfm_routes.js')(app);
+require('./app/routes/atd_routes.js')(app);
 
 //Listener
 app.listen(port);

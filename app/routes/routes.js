@@ -32,16 +32,7 @@ module.exports = function(app){
 		});
 	}); //end app get patient/jmbg
 
-	app.get('/patients/:jmbg/charts/atd', function(req, res, next){
-		var query = Patient.findOne({jmbg: req.params.jmbg});
-
-		query.exec(function(err, patient){
-			if(err) {return next(err);}
-
-			res.json(patient.atd_chart); //MAYBE
-		});
-	});
-
+	
 	//POST routes
 
 	//Save new patient to DB
